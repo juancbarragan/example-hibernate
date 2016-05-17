@@ -18,13 +18,13 @@
  
     <jpa:repositories base-package="com.reece.repositories" />
     
-    <context:component-scan base-package="com.reece" />
+    <context:component-scan base-package="com.reece.service" />
     
     <tx:annotation-driven transaction-manager="transactionManager"/>
     
     <bean id="transactionManager"
-          class="org.springframework.orm.hibernate5.HibernateTransactionManager">
-        <property name="sessionFactory" ref="sessionFactory"/>
+          class="org.springframework.orm.jpa.JpaTransactionManager">
+        
     </bean>
 
     

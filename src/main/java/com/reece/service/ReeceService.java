@@ -17,7 +17,7 @@ public class ReeceService {
     public AddressBook createAddressBook(String name){
         AddressBook addressBook = new AddressBook();
         addressBook.setName(name);
-        addressBook = addressBookRepository.saveAndFlush(addressBook);
+        addressBook = addressBookRepository.save(addressBook);
         return addressBook;
     }
 }

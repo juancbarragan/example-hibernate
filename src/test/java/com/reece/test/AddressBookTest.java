@@ -25,8 +25,9 @@ public class AddressBookTest {
     public void createAddressBookTest() {
         AddressBook addressBook = reeceService.createAddressBook("Address Book 1");
         
-        addressBookRepository.findOne(addressBook.getId());
+        AddressBook addressBookFound = addressBookRepository.findOne(addressBook.getId());
         
-        Assert.assertNotNull("Address Book 1 was not saved", addressBook);
+        Assert.assertNotNull("Address Book 1 was not saved", addressBookFound);
+        Assert.assertEquals("Address Book 1", addressBookFound.getName());
     }
 }
