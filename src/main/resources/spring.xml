@@ -5,9 +5,12 @@
        xmlns:repository="http://www.springframework.org/schema/data/repository"
        xmlns:jpa="http://www.springframework.org/schema/data/jpa"
        xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:p="http://www.springframework.org/schema/p"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
-        
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-3.1.xsd
+            
         http://www.springframework.org/schema/data/repository http://www.springframework.org/schema/data/repository/spring-repository.xsd
         http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
@@ -15,11 +18,15 @@
  
     <jpa:repositories base-package="com.reece.repositories" />
     
+    <context:component-scan base-package="com.reece" />
+    
     <tx:annotation-driven transaction-manager="transactionManager"/>
     
-    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
-        <property name="dataSource" ref="dataSource"/>
+    <bean id="transactionManager"
+          class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
+
     
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="org.hsqldb.jdbcDriver" />
@@ -28,7 +35,7 @@
         <property name="password" value="" />
     </bean>
     
-    <context:component-scan base-package="com.reece" />
+    
     
     <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
         <property name="showSql" value="true"/>
@@ -41,6 +48,29 @@
         <property name="jpaVendorAdapter" ref="jpaVendorAdapter"/>
         <!-- spring based scanning for entity classes>-->
         <property name="packagesToScan" value="com.reece.entities"/>
+    </bean>
+    
+    <util:properties id="hibernateProperties">
+        <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+        <prop key="hibernate.show_sql">true</prop>
+        <prop key="hibernate.connection.release_mode">auto</prop>
+        <prop key="hibernate.connection.autocommit">false</prop>
+        <prop key="hibernate.default_batch_fetch_size">32</prop>
+        <prop key="hibernate.jdbc.batch_size">32</prop>
+    </util:properties>
+
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+        <property name="dataSource" ref="dataSource" />
+        <!--        <property name="mappingResources"> -->
+        <!--            <list> -->
+        <!--            </list> -->
+        <!--        </property> -->
+        <!--        <property name="annotatedClasses"> -->
+        <!--            <util:list> -->
+        <!--            </util:list> -->
+        <!--        </property> -->
+        <property name="hibernateProperties" ref="hibernateProperties" />
     </bean>
 
 </beans>

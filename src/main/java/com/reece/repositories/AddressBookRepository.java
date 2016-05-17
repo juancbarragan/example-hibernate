@@ -1,9 +1,11 @@
 package com.reece.repositories;
 
 import com.reece.entities.AddressBook;
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.transaction.annotation.Transactional;
 
 @org.springframework.stereotype.Repository
-public interface AddressBookRepository extends CrudRepository<AddressBook, Long>{
+@Transactional
+public interface AddressBookRepository extends JpaRepository<AddressBook, Long>{
     
 }
