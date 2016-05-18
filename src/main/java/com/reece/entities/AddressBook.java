@@ -32,7 +32,7 @@ public class AddressBook implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
-    @NotNull(message = "{address_book.value_null}")
+    @NotNull(message = "{address_book.name_null}")
     @Size(min = 5, max = 30, message = "{address_book.name_size}")
     private String name;
     

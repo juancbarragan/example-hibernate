@@ -1,12 +1,25 @@
 package com.reece.entities;
 
+import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
+/**
+ *
+ * @author juancarlosbarraganquintero
+ */
 @Entity
-public class Contact {
+@Table(name="CONTACT")
+@NamedQuery(
+    name="Contact.findContactByName",
+    query="SELECT c from Contact c where c.name = ?1 and c.addressBook.name = ?2"
+)
+public class Contact implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -15,6 +28,9 @@ public class Contact {
     private String name;
 
     private String phoneNumber;
+    
+    @ManyToOne
+    private AddressBook addressBook;
 
     public Long getId() {
         return id;
@@ -38,6 +54,14 @@ public class Contact {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public AddressBook getAddressBook() {
+        return addressBook;
+    }
+
+    public void setAddressBook(AddressBook addressBook) {
+        this.addressBook = addressBook;
     }
     
     

@@ -26,6 +26,25 @@ public class ReeceService extends AbstractService{
         return addressBook;
     }
     
+    public void removeContactFromAddressBook(String contactName, String addressBookName) throws Exception{
+        // Find the Contact
+        Contact contact = contactRepository.findContactByName(contactName, addressBookName);
+        
+        if(contact == null){
+            throw new Exception("Contact with name " + contactName + 
+                    " does not exist in the Address Book " + addressBookName);
+        }
+        
+        AddressBook addressBook = contact.getAddressBook();
+        
+        contactRepository.delete(contact);
+        
+        addressBook.getContacts().remove(contact);
+        
+        addressBookRepository.save(addressBook);
+        
+    }
+    
     public void addContactToAddressBook(String addressBookName, String contactName, String contactPhone){
         // Find Address Book by name
         AddressBook addressBook = addressBookRepository.findByName(addressBookName);
@@ -33,6 +52,7 @@ public class ReeceService extends AbstractService{
         Contact contact = new Contact();
         contact.setName(contactName);
         contact.setPhoneNumber(contactPhone);
+        contact.setAddressBook(addressBook);
         contactRepository.save(contact);
         
         addressBook.getContacts().add(contact);
