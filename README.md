@@ -14,10 +14,12 @@ JUnit
 
 How to run:
 
-checkout from GitHub:
+1. Checkout from GitHub:
 
 $git clone https://github.com/juancbarragan/reece.git
 
-Maven Build
+2. Export JAVA_HOME to a Java 8 Installation
 
-mvn clean install
+3. Maven Build
+
+$mvn clean install
