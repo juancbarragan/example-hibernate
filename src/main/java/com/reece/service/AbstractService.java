@@ -7,6 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 
+/**
+ * Abstract Service containing validation
+ * 
+ * @author juancarlosbarraganquintero
+ */
 @Service
 @Validated
 public abstract class AbstractService {

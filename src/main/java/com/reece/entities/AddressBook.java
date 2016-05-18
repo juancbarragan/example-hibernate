@@ -17,7 +17,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 /**
- *
+ * Entity Bean Class representing an Address Book
+ * 
  * @author juancarlosbarraganquintero
  */
 @Entity

@@ -8,9 +8,13 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 /**
- *
+ * Entity Bean Class representing a Contact
+ * 
  * @author juancarlosbarraganquintero
  */
 @Entity
@@ -25,8 +29,12 @@ public class Contact implements Serializable {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @NotNull(message = "{contact.name_null}")
+    @Size(min = 3, max = 30, message = "{contact.name_size}")
     private String name;
 
+    @NotNull(message = "{contact.phone_null}")
+    @Pattern(regexp="[\\d\\-]{10,15}", message = "{contact.phone_pattern}")
     private String phoneNumber;
     
     @ManyToOne

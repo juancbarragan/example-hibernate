@@ -9,6 +9,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * Reece Service which exposes the following operations:
+ * 
+ * <ul>
+ * <li>Add Contact to Address Book</li>
+ * <li>Create Address Book</li>
+ * <li>Get All Contacts from Address Book</li>
+ * <li>Remove Contact from Address Book</li>
+ * </ul>
+ * 
+ * @author juancarlosbarraganquintero
+ */
 @Service
 @Transactional
 public class ReeceService extends AbstractService{
@@ -54,6 +66,7 @@ public class ReeceService extends AbstractService{
         contact.setName(contactName);
         contact.setPhoneNumber(contactPhone);
         contact.setAddressBook(addressBook);
+        validate(contact);
         contactRepository.save(contact);
         
         addressBook.getContacts().add(contact);
