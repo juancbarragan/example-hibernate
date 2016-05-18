@@ -7,5 +7,5 @@ import org.springframework.transaction.annotation.Transactional;
 @org.springframework.stereotype.Repository
 @Transactional
 public interface AddressBookRepository extends JpaRepository<AddressBook, Long>{
-    
+    public AddressBook findByName(String name);
 }

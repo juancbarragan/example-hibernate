@@ -57,6 +57,9 @@
         <prop key="hibernate.connection.autocommit">false</prop>
         <prop key="hibernate.default_batch_fetch_size">32</prop>
         <prop key="hibernate.jdbc.batch_size">32</prop>
+        <prop key="hibernate.enable_lazy_load_no_trans">true</prop>
+        
+        
     </util:properties>
 
     <bean id="sessionFactory"
@@ -71,6 +74,16 @@
         <!--            </util:list> -->
         <!--        </property> -->
         <property name="hibernateProperties" ref="hibernateProperties" />
+    </bean>
+    
+    <bean id="messageSource" class="org.springframework.context.support.ResourceBundleMessageSource">
+        <property name="basename">
+            <value>com/reece/validation/ValidationMessages</value>
+        </property>
+    </bean>
+    
+    <bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <property name="validationMessageSource" ref="messageSource"/>
     </bean>
 
 </beans>
