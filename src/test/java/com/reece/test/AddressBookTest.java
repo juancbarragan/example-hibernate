@@ -13,6 +13,7 @@ import com.reece.service.ReeceService;
 import java.util.Iterator;
 import java.util.Set;
 import javax.validation.ValidationException;
+import javax.validation.constraints.AssertFalse;
 import org.jboss.logging.Logger;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -173,5 +174,29 @@ public class AddressBookTest {
         AddressBook addressBook = addressBookRepository.findByName("Address Book 2");
         
         Assert.assertEquals("Contact ", 2, addressBook.getContacts().size());
+    }
+    
+    public void listAllContactsTest(){
+        reeceService.createAddressBook("Address Book 1");
+        reeceService.createAddressBook("Address Book 2");
+        
+        reeceService.addContactToAddressBook("Address Book 2", "Carlos", "0425618412");
+        reeceService.addContactToAddressBook("Address Book 2", "Bill", "0425618413");
+        reeceService.addContactToAddressBook("Address Book 2", "Jarrod", "0425618414");
+        reeceService.addContactToAddressBook("Address Book 1", "Albert", "0425618415");
+        
+        // Find the contacts now
+        Contact carlos = contactRepository.findContactByName("Carlos", "Address Book 2");
+        Contact bill = contactRepository.findContactByName("Carlos", "Address Book 2");
+        Contact jarrod = contactRepository.findContactByName("Carlos", "Address Book 2");
+        Contact albert = contactRepository.findContactByName("Carlos", "Address Book 1");
+        
+        // Get all contacts from the service
+        Set<Contact> contacts = reeceService.getAllContactsAddressBook("Address Book 2");
+        
+        Assert.assertTrue(contacts.contains(carlos)); 
+        Assert.assertTrue(contacts.contains(bill)); 
+        Assert.assertTrue(contacts.contains(jarrod)); 
+        Assert.assertFalse(contacts.contains(albert));
     }
 }

@@ -4,6 +4,7 @@ import com.reece.entities.AddressBook;
 import com.reece.entities.Contact;
 import com.reece.repositories.AddressBookRepository;
 import com.reece.repositories.ContactRepository;
+import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,5 +58,12 @@ public class ReeceService extends AbstractService{
         
         addressBook.getContacts().add(contact);
         addressBookRepository.save(addressBook);
+    }
+    
+    public Set<Contact> getAllContactsAddressBook(String addressBookName){
+        // Find Address Book by name
+        AddressBook addressBook = addressBookRepository.findByName(addressBookName);
+        
+        return addressBook.getContacts();
     }
 }
