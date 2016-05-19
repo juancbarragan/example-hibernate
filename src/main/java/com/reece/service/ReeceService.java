@@ -2,8 +2,11 @@ package com.reece.service;
 
 import com.reece.entities.AddressBook;
 import com.reece.entities.Contact;
+import com.reece.exception.ContactNotFoundException;
 import com.reece.repositories.AddressBookRepository;
 import com.reece.repositories.ContactRepository;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +33,11 @@ public class ReeceService extends AbstractService{
     @Autowired
     ContactRepository contactRepository;
     
-    
+    /**
+     * Creates a new Address Book
+     * @param name Address Book name
+     * @return newly created Address Book
+     */
     public AddressBook createAddressBook(String name){
         AddressBook addressBook = new AddressBook();
         addressBook.setName(name);
@@ -39,12 +46,18 @@ public class ReeceService extends AbstractService{
         return addressBook;
     }
     
-    public void removeContactFromAddressBook(String contactName, String addressBookName) throws Exception{
+    /**
+     * Removes a contact from an Address Book
+     * @param contactName Contact name to be deleted
+     * @param addressBookName Address Book name
+     * @throws Exception 
+     */
+    public void removeContactFromAddressBook(String contactName, String addressBookName) throws ContactNotFoundException{
         // Find the Contact
         Contact contact = contactRepository.findContactByName(contactName, addressBookName);
         
         if(contact == null){
-            throw new Exception("Contact with name " + contactName + 
+            throw new ContactNotFoundException("Contact with name " + contactName + 
                     " does not exist in the Address Book " + addressBookName);
         }
         
@@ -58,6 +71,12 @@ public class ReeceService extends AbstractService{
         
     }
     
+    /**
+     * Add a Contact to an Address Book
+     * @param addressBookName Address Book name where the contact is to be put
+     * @param contactName Contact name
+     * @param contactPhone Contact Phone Number
+     */
     public void addContactToAddressBook(String addressBookName, String contactName, String contactPhone){
         // Find Address Book by name
         AddressBook addressBook = addressBookRepository.findByName(addressBookName);
@@ -73,10 +92,30 @@ public class ReeceService extends AbstractService{
         addressBookRepository.save(addressBook);
     }
     
+    /**
+     * Get all Contacts belonging to an Address Book
+     * @param addressBookName Address Book name
+     * @return a Set of all the Contacts that belong to the Address Book
+     */
     public Set<Contact> getAllContactsAddressBook(String addressBookName){
         // Find Address Book by name
         AddressBook addressBook = addressBookRepository.findByName(addressBookName);
         
         return addressBook.getContacts();
+    }
+    
+    /**
+     * Get all Contacts across all Address Books
+     * 
+     * @return a Set containing all the Contacts from all Address Books.
+     */
+    public Set<Contact> getContactsAllAddressBooks(){
+        List<Contact> allContacts;
+        allContacts = contactRepository.findAll();
+        
+        Set<Contact> result = new HashSet<>();
+        
+        result.addAll(allContacts);
+        return result;
     }
 }

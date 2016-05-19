@@ -2,6 +2,7 @@ package com.reece.test;
 
 import com.reece.entities.AddressBook;
 import com.reece.entities.Contact;
+import com.reece.exception.ContactNotFoundException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,12 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 @ContextConfiguration(locations = {"classpath:spring.xml"})
 @EnableTransactionManagement
 public class AddressBookTest {
-
-    @Autowired
-    private ApplicationContext applicationContext;
-
-    private final Logger log = Logger.getLogger(AddressBookTest.class.getName());
-
+    
     @Autowired
     AddressBookRepository addressBookRepository;
 
@@ -48,6 +44,9 @@ public class AddressBookTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
+    /**
+     * Test Create a new Address Book
+     */
     @Test
     public void createAddressBookTest() {
         AddressBook addressBook = reeceService.createAddressBook("Address Book 1");
@@ -58,6 +57,10 @@ public class AddressBookTest {
         Assert.assertEquals("Address Book 1", addressBookFound.getName());
     }
 
+    /**
+     * Test that creating a new Address Book with a null name results in
+     * {@link ValidationException}
+     */
     @Test
     public void createAddressBookNameNullTest() {
         expectedException.expect(ValidationException.class);
@@ -66,6 +69,10 @@ public class AddressBookTest {
         reeceService.createAddressBook(null);
     }
 
+    /**
+     * Test that creating a new Address Book with a blank name results in
+     * {@link ValidationException}
+     */
     @Test
     public void createAddressBookNameBlankTest() {
         expectedException.expect(ValidationException.class);
@@ -74,6 +81,10 @@ public class AddressBookTest {
         reeceService.createAddressBook("");
     }
 
+    /**
+     * Test that creating a new Address Book with a too short name results in
+     * {@link ValidationException}
+     */
     @Test
     public void createAddressBookNameTooShortTest() {
         expectedException.expect(ValidationException.class);
@@ -82,6 +93,10 @@ public class AddressBookTest {
         reeceService.createAddressBook("ab");
     }
 
+    /**
+     * Test that creating a new Address Book with a to long name results in
+     * {@link ValidationException}
+     */
     @Test
     public void createAddressBookNameTooLongTest() {
         expectedException.expect(ValidationException.class);
@@ -90,6 +105,9 @@ public class AddressBookTest {
         reeceService.createAddressBook("1xxxxxxxxxx2xxxxxxxxxx3xxxxxxxxxxY");
     }
 
+    /**
+     * Test add a Contact to an Address Book
+     */
     @Test
     @Transactional
     public void addContactToAddressBookTest() {
@@ -119,6 +137,10 @@ public class AddressBookTest {
         Assert.assertEquals("Contact phone does not match", "0425618412", contact.getPhoneNumber());
     }
 
+    /**
+     * Test that creating adding a new Contact with a null name results in
+     * {@link ValidationException}
+     */
     @Test
     @Transactional
     public void addContactNullNameTest() {
@@ -131,9 +153,13 @@ public class AddressBookTest {
 
     }
     
+    /**
+     * Test that creating adding a new Contact with a too short name results in
+     * {@link ValidationException}
+     */
     @Test
     @Transactional
-    public void addContactNullNameTooShortTest() {
+    public void addContactNameTooShortTest() {
         expectedException.expect(Exception.class);
         expectedException.expectMessage("The Contact Name must have at least 3 and maximum 30 characters");
 
@@ -143,6 +169,10 @@ public class AddressBookTest {
 
     }
     
+    /**
+     * Test that creating adding a new Contact with a null phone number results in
+     * {@link ValidationException}
+     */
     @Test
     @Transactional
     public void addContactNullPhoneTest() {
@@ -155,6 +185,10 @@ public class AddressBookTest {
 
     }
     
+    /**
+     * Test that creating adding a new Contact with an invalid phone number results in
+     * {@link ValidationException}
+     */
     @Test
     @Transactional
     public void addContactInvalidPhoneTest() {
@@ -167,9 +201,13 @@ public class AddressBookTest {
 
     }
     
+    /**
+     * Test that creating adding a new Contact with a too long name results in
+     * {@link ValidationException}
+     */
     @Test
     @Transactional
-    public void addContactNullNameTooLongTest() {
+    public void addContactNameTooLongTest() {
         expectedException.expect(Exception.class);
         expectedException.expectMessage("The Contact Name must have at least 3 and maximum 30 characters");
 
@@ -179,9 +217,14 @@ public class AddressBookTest {
 
     }
 
+    /**
+     * Test remove a Contact from an Address Book
+     *
+     * @throws ContactNotFoundException if the Contact cannot be found
+     */
     @Test
     @Transactional
-    public void removeContactFromAddressBookTest() throws Exception {
+    public void removeContactFromAddressBookTest() throws ContactNotFoundException {
         reeceService.createAddressBook("Address Book 2");
 
         reeceService.addContactToAddressBook("Address Book 2", "Carlos", "0425618412");
@@ -196,10 +239,15 @@ public class AddressBookTest {
         Assert.assertEquals("Contact ", 2, addressBook.getContacts().size());
     }
 
+    /**
+     * Test remove a Contact that does not exist from an Address Book
+     *
+     * @throws ContactNotFoundException as the Contact will not be found
+     */
     @Test
     @Transactional
-    public void removeContactNotExistsFromAddressBookTest() throws Exception {
-        expectedException.expect(Exception.class);
+    public void removeContactNotExistsFromAddressBookTest() throws ContactNotFoundException {
+        expectedException.expect(ContactNotFoundException.class);
         expectedException.expectMessage("Contact with name Blue does not exist in the Address Book Address Book 2");
 
         reeceService.createAddressBook("Address Book 2");
@@ -216,10 +264,15 @@ public class AddressBookTest {
         Assert.assertEquals("Contact ", 2, addressBook.getContacts().size());
     }
 
+    /**
+     * Test remove a Contact from an Address Book that does not exist
+     *
+     * @throws ContactNotFoundException as the Contact will not be found
+     */
     @Test
     @Transactional
-    public void removeContactBookNotExistsTest() throws Exception {
-        expectedException.expect(Exception.class);
+    public void removeContactBookNotExistsTest() throws ContactNotFoundException {
+        expectedException.expect(ContactNotFoundException.class);
         expectedException.expectMessage("Contact with name Jarrod does not exist in the Address Book Address Book 3");
 
         reeceService.createAddressBook("Address Book 2");
@@ -236,7 +289,12 @@ public class AddressBookTest {
         Assert.assertEquals("Contact ", 2, addressBook.getContacts().size());
     }
 
-    public void listAllContactsTest() {
+    /**
+     * Test List all contacts from an Address Book
+     */
+    @Test
+    @Transactional
+    public void listAllContactsFromBookTest() {
         reeceService.createAddressBook("Address Book 1");
         reeceService.createAddressBook("Address Book 2");
 
@@ -258,5 +316,39 @@ public class AddressBookTest {
         Assert.assertTrue(contacts.contains(bill));
         Assert.assertTrue(contacts.contains(jarrod));
         Assert.assertFalse(contacts.contains(albert));
+    }
+    
+    /**
+     * Test list all contacts from all Address Books
+     */
+    @Test
+    @Transactional
+    public void listAllContactsFromAllBooksTest() {
+        
+        int addedContacts = 0;
+        
+        // Create 5 address books
+        for (int i = 0; i < 5; i++) {
+            reeceService.createAddressBook("Address Book " + i);
+            
+            // add 5 + i contacts
+            for (int j = 0; j < 5 + i; j++) {
+                addedContacts++;
+                reeceService.addContactToAddressBook("Address Book " + i, "Carlos " + j, "042561841" + j);
+            }
+        }
+        
+        Set<Contact> allContacts = reeceService.getContactsAllAddressBooks();
+        
+        Assert.assertNotNull("The returned Set was null", allContacts);
+        Assert.assertEquals("Not all contacts were returned", addedContacts, allContacts.size());
+        
+        // Check that no Contact has null fields. Other tests have covered this and more.
+        allContacts.stream().forEach((c) -> {
+            Assert.assertNotNull(c.getId());
+            Assert.assertNotNull(c.getName());
+            Assert.assertNotNull(c.getPhoneNumber());
+            Assert.assertNotNull(c.getAddressBook());
+        });
     }
 }
